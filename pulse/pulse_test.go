@@ -2,14 +2,15 @@ package pulse
 
 import (
 	"context"
+	"log"
+	"testing"
+	"time"
+
 	"github.com/roava/bifrost"
 	"github.com/roava/bifrost/events"
 	"github.com/roava/bifrost/platform"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
-	"log"
-	"testing"
-	"time"
 )
 
 func TestInit(t *testing.T) {

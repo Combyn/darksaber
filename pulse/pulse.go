@@ -6,10 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/apache/pulsar-client-go/pulsar"
-	"github.com/roava/bifrost"
-	"github.com/roava/bifrost/platform"
-	"go.uber.org/zap"
 	"io/ioutil"
 	"math/rand"
 	"os"
@@ -17,6 +13,11 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/apache/pulsar-client-go/pulsar"
+	"github.com/roava/bifrost"
+	"github.com/roava/bifrost/platform"
+	"go.uber.org/zap"
 )
 
 type pulsarStore struct {
@@ -164,22 +165,17 @@ func (s *pulsarStore) Subscribe(topic string, handler bifrost.SubscriptionHandle
 	}
 
 	defer consumer.Close()
-	for {
-		select {
-		case cm, ok := <-consumer.Chan():
-			if !ok {
-				return bifrost.ErrCloseConn
-			}
-			if s.debug {
-				s.logger.With(zap.String(
-					"data", string(cm.Payload())),
-					zap.String("topic", cm.Topic())).Info("new event received")
-			}
-			event := platform.NewEvent(cm, cm)
-			go handler(event)
-		default:
+	for cm := range consumer.Chan() {
+		if s.debug {
+			s.logger.With(zap.String(
+				"data", string(cm.Payload())),
+				zap.String("topic", cm.Topic())).Info("new event received")
 		}
+		event := platform.NewEvent(cm, cm)
+		go handler(event)
 	}
+
+	return nil
 }
 
 func (s *pulsarStore) Run(ctx context.Context, handlers ...bifrost.EventHandler) {
