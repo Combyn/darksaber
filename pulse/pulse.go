@@ -159,6 +159,9 @@ func (s *pulsarStore) Subscribe(topic string, handler bifrost.SubscriptionHandle
 		Type:                        pulsar.Shared,
 		SubscriptionInitialPosition: pulsar.SubscriptionPositionLatest,
 		Name:                        serviceName,
+		DLQ: &pulsar.DLQPolicy{
+			MaxDeliveries: 10,
+		},
 	})
 	if err != nil {
 		return fmt.Errorf("error subscribing to topic. %v", err)
