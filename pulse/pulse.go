@@ -161,6 +161,7 @@ func (s *pulsarStore) Subscribe(topic string, handler bifrost.SubscriptionHandle
 		Name:                        serviceName,
 		DLQ: &pulsar.DLQPolicy{
 			MaxDeliveries: 10,
+			Topic:         fmt.Sprintf("%s-dlt", topic),
 		},
 	})
 	if err != nil {
