@@ -1,10 +1,10 @@
-package bifrost
+package darksaber
 
 import (
 	"context"
+	"github.com/Combyn/darksaber/platform"
 	"github.com/apache/pulsar-client-go/pulsar"
 	"github.com/pkg/errors"
-	"github.com/roava/bifrost/platform"
 	"log"
 	"time"
 )

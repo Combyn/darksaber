@@ -1,4 +1,4 @@
-package bifrost
+package darksaber
 
 type Event interface {
 	Ack()

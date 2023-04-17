@@ -14,16 +14,16 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Combyn/darksaber"
+	"github.com/Combyn/darksaber/platform"
 	"github.com/apache/pulsar-client-go/pulsar"
-	"github.com/roava/bifrost"
-	"github.com/roava/bifrost/platform"
 	"go.uber.org/zap"
 )
 
 type pulsarStore struct {
 	serviceName string
 	client      pulsar.Client
-	opts        bifrost.Options
+	opts        darksaber.Options
 	logger      *zap.Logger
 	debug       bool
 
@@ -33,15 +33,15 @@ type pulsarStore struct {
 	mtx       sync.Mutex
 }
 
-func Init(opts bifrost.Options) (bifrost.EventStore, error) {
+func Init(opts darksaber.Options) (darksaber.EventStore, error) {
 	addr := strings.TrimSpace(opts.Address)
 	if addr == "" {
-		return nil, bifrost.ErrInvalidURL
+		return nil, darksaber.ErrInvalidURL
 	}
 
 	name := strings.TrimSpace(opts.ServiceName)
 	if name == "" {
-		return nil, bifrost.ErrEmptyStoreName
+		return nil, darksaber.ErrEmptyStoreName
 	}
 
 	clientOptions := pulsar.ClientOptions{URL: addr}
@@ -66,7 +66,7 @@ func Init(opts bifrost.Options) (bifrost.EventStore, error) {
 	return &pulsarStore{client: p, serviceName: name, logger: logger, testMode: false, debug: opts.Debug}, nil
 }
 
-func InitTestEventStore(serviceName string, logger *zap.Logger) (bifrost.EventStore, error) {
+func InitTestEventStore(serviceName string, logger *zap.Logger) (darksaber.EventStore, error) {
 	return &pulsarStore{serviceName: serviceName, testMode: true,
 		consumers: map[string]chan []byte{}, logger: logger}, nil
 }
@@ -128,7 +128,7 @@ func (s *pulsarStore) Publish(topic string, message []byte) error {
 	return nil
 }
 
-func (s *pulsarStore) Subscribe(topic string, handler bifrost.SubscriptionHandler) error {
+func (s *pulsarStore) Subscribe(topic string, handler darksaber.SubscriptionHandler) error {
 	if s.testMode {
 		s.mtx.Lock()
 		ch := s.consumers[topic]
@@ -178,7 +178,7 @@ func (s *pulsarStore) Subscribe(topic string, handler bifrost.SubscriptionHandle
 	return nil
 }
 
-func (s *pulsarStore) Run(ctx context.Context, handlers ...bifrost.EventHandler) {
+func (s *pulsarStore) Run(ctx context.Context, handlers ...darksaber.EventHandler) {
 	for _, handler := range handlers {
 		go handler.Run()
 	}

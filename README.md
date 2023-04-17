@@ -1,5 +1,5 @@
-# bifrost
-An internal lib to help with pulsar usage inside Roava. 
+# Darksaber
+An internal lib to help with pulsar usage inside Combyn. 
 
 ## Features
 * helper method to create event schema
@@ -13,10 +13,10 @@ An internal lib to help with pulsar usage inside Roava.
 package main
 
 import (
- "github.com/roava/bifrost"
- "github.com/roava/bifrost/events"
-"github.com/roava/bifrost/platform"
-"github.com/roava/bifrost/pulse"
+ "github.com/Combyn/darksaber"
+ "github.com/Combyn/darksaber/events"
+"github.com/Combyn/darksaber/platform"
+"github.com/Combyn/darksaber/pulse"
  "log"
  "time"
 )
@@ -29,9 +29,9 @@ type Account struct{
 func main() {
 	
     // publishing an event to a topic
-    // assuming we're publishing to a topic name `io.roava.account.created`
-    topic := "io.roava.account.created"
-    store, err := pulse.Init(bifrost.Options{
+    // assuming we're publishing to a topic name `io.Combyn.account.created`
+    topic := "io.Combyn.account.created"
+    store, err := pulse.Init(darksaber.Options{
         ServiceName: "test-event-store",
 	    Address: "pulsar://localhost:6650",
         Debug: true,
@@ -92,17 +92,17 @@ func main() {
 ### Unit Testing
 ##### Publisher
 
-To test event publishing, you can always mock `bifrost.EventStore`.
+To test event publishing, you can always mock `darksaber.EventStore`.
 
 ##### Consumer/Subscriber
 Below is an example of how you can test a subscriber.
 ```go
 type eventHandler struct {
-    bf bifrost.EventStore
+    bf darksaber.EventStore
     store db.Datastore
 }
 func (e *eventHandler) handleAccountCreatedEvent() error {
-    topic := "io.roava.account.created"
+    topic := "io.Combyn.account.created"
     return e.bf.Subscribe(topic, func(event platform.Event)) {
         a := &Account{}
         data, err := event.Parse(a)
@@ -123,13 +123,13 @@ func Test_handleAccountCreatedEvent(t *testing.T) {
     storeMock := mocks.NewMockDatastore(ctrl)
     storeMock.Expect().CreateAccount(gomock.Any()).Return(nil).Times(1)
     
-    // create an bifrost instance. Not the `InitTestEventStore` function
+    // create an darksaber instance. Not the `InitTestEventStore` function
     bf, err := pulse.InitTestEventStore("ms.test", logrus.StandardLogger())
     assert.Nil(t, err)
     
     handler := &eventHandler{bf: bf, store: storeMock}
     // publish an event
-    topic := "io.roava.account.created"
+    topic := "io.Combyn.account.created"
      account := &Account{
         FirstName: "Foo",
         LastName: "Gopher",

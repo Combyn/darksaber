@@ -1,4 +1,4 @@
-package bifrost
+package darksaber
 
 type Options struct {
 	ServiceName         string

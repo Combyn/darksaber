@@ -2,7 +2,7 @@ package platform
 
 import (
 	"encoding/json"
-	"github.com/roava/bifrost/events"
+	"github.com/Combyn/darksaber/events"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"

@@ -1,8 +1,8 @@
 package pulse
 
 import (
+	"github.com/Combyn/darksaber"
 	"github.com/apache/pulsar-client-go/pulsar"
-	"github.com/roava/bifrost"
 )
 
 type event struct {
@@ -10,7 +10,7 @@ type event struct {
 	consumer pulsar.Consumer
 }
 
-func NewEvent(message pulsar.Message, consumer pulsar.Consumer) bifrost.Event {
+func NewEvent(message pulsar.Message, consumer pulsar.Consumer) darksaber.Event {
 	return &event{raw: message, consumer: consumer}
 }
 

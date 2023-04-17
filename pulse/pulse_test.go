@@ -6,16 +6,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/roava/bifrost"
-	"github.com/roava/bifrost/events"
-	"github.com/roava/bifrost/platform"
+	"github.com/Combyn/darksaber"
+	"github.com/Combyn/darksaber/events"
+	"github.com/Combyn/darksaber/platform"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 )
 
 func TestInit(t *testing.T) {
 	addrs := "pulsar://localhost:6650"
-	opts := bifrost.Options{
+	opts := darksaber.Options{
 		ServiceName:         "test-service",
 		Address:             addrs,
 		CertContent:         "",
@@ -101,7 +101,7 @@ func TestIntegration(t *testing.T) {
 }
 
 type eventHandler struct {
-	bf bifrost.EventStore
+	bf darksaber.EventStore
 }
 
 func (e *eventHandler) handleEvent() error {

@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/Combyn/darksaber"
 	"github.com/apache/pulsar-client-go/pulsar"
-	"github.com/roava/bifrost"
 )
 
 type producerWrapper struct {
@@ -26,7 +26,7 @@ type consumerWrapper struct {
 	consumer pulsar.Consumer
 }
 
-func (c *consumerWrapper) Recv(ctx context.Context) (bifrost.Message, error) {
+func (c *consumerWrapper) Recv(ctx context.Context) (darksaber.Message, error) {
 	return c.consumer.Receive(ctx)
 }
 
@@ -42,11 +42,11 @@ type clientWrapper struct {
 	client pulsar.Client
 }
 
-func newClientWrapper(p pulsar.Client) bifrost.Client {
+func newClientWrapper(p pulsar.Client) darksaber.Client {
 	return &clientWrapper{client: p}
 }
 
-func (c *clientWrapper) CreateProducer(opt pulsar.ProducerOptions) (bifrost.Producer, error) {
+func (c *clientWrapper) CreateProducer(opt pulsar.ProducerOptions) (darksaber.Producer, error) {
 	p, err := c.client.CreateProducer(opt)
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (c *clientWrapper) CreateProducer(opt pulsar.ProducerOptions) (bifrost.Prod
 	return &producerWrapper{producer: p}, nil
 }
 
-func (c *clientWrapper) Subscribe(opt pulsar.ConsumerOptions) (bifrost.Consumer, error) {
+func (c *clientWrapper) Subscribe(opt pulsar.ConsumerOptions) (darksaber.Consumer, error) {
 	consumer, err := c.client.Subscribe(opt)
 	if err != nil {
 		return nil, err

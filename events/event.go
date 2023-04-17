@@ -1,7 +1,7 @@
 package events
 
 import (
-	"github.com/roava/bifrost/idgenerator"
+	"github.com/Combyn/darksaber/idgenerator"
 	"time"
 )
 
